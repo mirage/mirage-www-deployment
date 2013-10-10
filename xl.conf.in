@@ -1,0 +1,4 @@
+name='mirage-www'
+memory='256'
+kernel='@KERNEL@'
+vif=['bridge=xenbr0']
