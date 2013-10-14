@@ -2,3 +2,4 @@ name='mirage-www'
 memory='256'
 kernel='@KERNEL@'
 vif=['bridge=xenbr0']
+on_crash='restart'
