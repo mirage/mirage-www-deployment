@@ -1,11 +1,5 @@
 open Mirage
 
-let ipv4_config =
-  let address = Ipaddr.V4.of_string_exn "128.232.97.54" in
-  let netmask = Ipaddr.V4.of_string_exn "255.255.255.224" in
-  let gateways = [Ipaddr.V4.of_string_exn "128.232.97.33"] in
- { address; netmask; gateways }
-
 (* If the Unix `FS` is set, the choice of configuration changes:
    FS=crunch (or nothing): use static filesystem via crunch
    FS=fat: use FAT and block device
@@ -45,12 +39,12 @@ let dhcp =
   try match Sys.getenv "DHCP" with
     | "" -> false
     | _  -> true
-  with Not_found -> false
+  with Not_found -> true
 
 let stack console =
   match net, dhcp with
   | `Direct, true  -> direct_stackv4_with_dhcp console tap0
-  | `Direct, false -> direct_stackv4_with_static_ipv4 console tap0 ipv4_config
+  | `Direct, false -> direct_stackv4_with_default_ipv4 console tap0
   | `Socket, _     -> socket_stackv4 console [Ipaddr.V4.any]
 
 let port =
