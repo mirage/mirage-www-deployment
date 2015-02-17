@@ -1,4 +1,4 @@
-name='mirage-www'
+name='@VM@'
 memory='256'
 kernel='@KERNEL@'
 vif=['bridge=xenbr0']
