@@ -1,0 +1,1 @@
+*/5 * * * * cd $HOME/mirage-www-deployment && git pull
