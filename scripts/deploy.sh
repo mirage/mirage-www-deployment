@@ -14,20 +14,47 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 
-VM=mir-www
-XM=xl
+# Assumption: the FAT image containing the certificate is at the root
+# of the Git repository
 
 ROOT=$(git rev-parse --show-toplevel)
-cd $ROOT
-
 KERNEL=$ROOT/xen/`cat xen/latest`
-sed -e "s,@VM@,$VM,g; s,@KERNEL@,$KERNEL/$VM.xen,g" \
-    < $XM.conf.in \
-    >| $KERNEL/$XM.conf
+KEYS=$ROOT/keys.img
 
-cd $KERNEL
-rm -f $VM.xen
-bunzip2 -k $VM.xen.bz2
+function deploy {
+    NAME=$1
+    TLS=$2
 
-sudo $XM destroy $VM || true
-sudo $XM create $XM.conf
+    VM=mir-${NAME}
+    XL=xl
+    case "$TLS" in
+	false) DISK="" ;;
+	*)
+	    OLD_LOSETUP=`sudo losetup -j ${KEYS} -v | cut -f 1 -d ':'`
+	    # there is a race here
+	    NEW_LOSETUP=`sudo losetup -f`
+	    DISK="disk = [ '${NEW_LOSETUP},,xvda' ]"
+	    ;;
+  esac
+
+  cd $ROOT
+
+  sed -e "s,@VM@,$VM,g; s,@KERNEL@,$KERNEL/$VM.xen,g; s:@DISK@:$DISK:g" \
+      < $XL.conf.in \
+      >| $KERNEL/$NAME.$XL
+
+  cd $KERNEL
+
+  rm -f $VM.xen
+  bunzip2 -k $VM.xen.bz2
+
+  sudo $XM destroy $VM || true
+
+  if [ ! -z $OLD_LOSETUP ]; then sudo losetup -d ${OLD_LOSETUP}; fi
+  if [ ! -z $NEW_LOSETUP ]; then sudo losetup ${NEW_LOSETUP} ${KEYS}; fi
+
+  sudo $XM create $XM.conf
+}
+
+deploy mirage.io true
+deploy openmirage.org false
