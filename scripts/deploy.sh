@@ -1,4 +1,4 @@
-#!/bin/sh -ex
+#!/usr/bin/env bash
 #
 # Copyright (c) 2015 Richard Mortier <mort@cantab.net>. All Rights Reserved.
 #
@@ -17,44 +17,57 @@
 # Assumption: the FAT image containing the certificate is at the root
 # of the Git repository
 
+set -e
+
+XL=xl
 ROOT=$(git rev-parse --show-toplevel)
 KERNEL=$ROOT/xen/`cat xen/latest`
 KEYS=$ROOT/keys.img
 
-function deploy {
-    NAME=$1
-    TLS=$2
-
-    VM=mir-${NAME}
-    XL=xl
-    case "$TLS" in
-	false) DISK="" ;;
-	*)
-	    OLD_LOSETUP=`sudo losetup -j ${KEYS} -v | cut -f 1 -d ':'`
-	    # there is a race here
-	    NEW_LOSETUP=`sudo losetup -f`
-	    DISK="disk = [ '${NEW_LOSETUP},,xvda' ]"
-	    ;;
-  esac
-
-  cd $ROOT
-
-  sed -e "s,@VM@,$VM,g; s,@KERNEL@,$KERNEL/$VM.xen,g; s:@DISK@:$DISK:g" \
-      < $XL.conf.in \
-      >| $KERNEL/$NAME.$XL
-
-  cd $KERNEL
-
-  rm -f $VM.xen
-  bunzip2 -k $VM.xen.bz2
-
-  sudo $XM destroy $VM || true
-
-  if [ ! -z $OLD_LOSETUP ]; then sudo losetup -d ${OLD_LOSETUP}; fi
-  if [ ! -z $NEW_LOSETUP ]; then sudo losetup ${NEW_LOSETUP} ${KEYS}; fi
-
-  sudo $XM create $XM.conf
+function destroy_vm {
+    VM=$1
+    cd $KERNEL
+    rm -f $VM.xen
+    bunzip2 -k $VM.xen.bz2
+    sudo $XL destroy ${VM#mir-} || true
 }
 
-deploy mirage.io true
-deploy openmirage.org false
+function create_vm {
+    VM=$1
+    cd $KERNEL
+    sudo $XL create $VM.$XL
+}
+
+function prepare_config {
+    DISK=$1
+    cd $ROOT
+    sed -e "s,@VM@,$VM,g; s,@KERNEL@,$KERNEL/$VM.xen,g; s:@DISK@:$DISK:g" \
+	< $XL.conf.in \
+	>| $KERNEL/$NAME.$XL
+}
+
+function deploy {
+    NAME=$1
+    VM=mir-${NAME}
+    prepare_config ""
+    destroy_vm $VM
+    create_vm $VM
+}
+
+function deploy_tls {
+    NAME=$1
+    VM=mir-${NAME}
+    XL=xl
+    OLD_LOSETUP=`sudo losetup -j ${KEYS} -v | cut -f 1 -d ':'`
+    # there is a race here
+    NEW_LOSETUP=`sudo losetup -f`
+    DISK="disk = [ '${NEW_LOSETUP},,xvda' ]"
+    prepare_config "$DISK"
+    destroy_vm ${VM}
+    if ! [ -z $OLD_LOSETUP ]; then sudo losetup -d ${OLD_LOSETUP}; fi
+    if ! [ -z $NEW_LOSETUP ]; then sudo losetup ${NEW_LOSETUP} ${KEYS}; fi
+    create_vm ${VM}
+}
+
+deploy_tls mirage.io
+deploy openmirage.org
