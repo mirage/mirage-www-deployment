@@ -18,7 +18,7 @@
 set -eu
 
 if [ "$#" -eq 0 ]; then
-    echo "usage: $(basename "$0") NAME [DISK]"
+    echo "usage: $(basename "$0") NAME"
     exit 1
 fi
 
