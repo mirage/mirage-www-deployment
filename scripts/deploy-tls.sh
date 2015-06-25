@@ -33,7 +33,7 @@ DIR=$2
 
 ROOT=$(git rev-parse --show-toplevel)
 SCRIPTS="$ROOT/scripts"
-FILE="$ROOT/keys.img"
+FILE="$ROOT/fat.img"
 
 "$SCRIPTS/destroy-vm.sh" "$NAME"
 
