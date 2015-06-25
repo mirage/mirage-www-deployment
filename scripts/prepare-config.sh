@@ -28,10 +28,9 @@ if [ "$#" -eq 1 ]; then DISK=""; else DISK=$2; fi
 
 ROOT=$(git rev-parse --show-toplevel)
 KERNEL=$ROOT/xen/$(cat "$ROOT/xen/latest")
-VM="mir-$NAME"
 
 cd "$ROOT"
 
-sed -e "s,@VM@,$VM,g; s,@KERNEL@,$KERNEL/$VM.xen,g; s:@DISK@:$DISK:g" \
+sed -e "s,@NAME@,$NAME,g; s,@KERNEL@,$KERNEL/mir-$NAME.xen,g; s:@DISK@:$DISK:g" \
     < xl.conf.in \
     >| "$KERNEL/$NAME.xl"
