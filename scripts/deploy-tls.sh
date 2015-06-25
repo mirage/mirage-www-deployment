@@ -23,10 +23,10 @@ if [ "$#" -eq 0 ]; then
 fi
 NAME=$1
 
-if [ "$#" -eq 1 ] || ! [ -f "$2/tls/server.key" ] || ! [ -f "$2/tls/server.key" ];
+if [ "$#" -eq 1 ] || ! [ -f "$2/tls/server.key" ] || ! [ -f "$2/tls/server.pem" ];
 then
-    echo "The directory containting the certificates is missing or invalid."
     echo "usage: $(basename "$0") NAME DIR"
+    echo "DIR should contain 'tls/server.key' and 'tls/server.pem'."
     exit 1
 fi
 DIR=$2

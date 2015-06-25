@@ -19,8 +19,8 @@ set -eu
 
 if [ "$#" -ne 1 ] || ! [ -f "$1/tls/server.key" ] || ! [ -f "$1/tls/server.pem" ];
 then
-    echo "usage: $(basename "$0") IN-DIR"
-    echo "IN-DIR should contain 'tls/server.key' and 'tls/server.pem'."
+    echo "usage: $(basename "$0") DIR"
+    echo "DIR should contain 'tls/server.key' and 'tls/server.pem'."
     exit 1
 fi
 
