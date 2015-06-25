@@ -23,4 +23,4 @@
 
 ROOT=$(git rev-parse --show-toplevel)
 "$ROOT/scripts/deploy.sh" openmirage.org
-"$ROOT/scripts/deploy-tls.sh" mirage.io "$ROOT/keys.img"
+"$ROOT/scripts/deploy-tls.sh" mirage.io "$ROOT/tls"
