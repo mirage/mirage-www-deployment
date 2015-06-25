@@ -43,7 +43,7 @@ FILE="$ROOT/fat.img"
 OLD_LOSETUP=$(sudo losetup -j "$FILE" -v | cut -f 1 -d ':')
 if ! [ -z "$OLD_LOSETUP" ]; then sudo losetup -d "$OLD_LOSETUP"; fi
 
-"$SCRIPTS/make-fat-image.sh" "$DIR" "$FILE"
+"$SCRIPTS/make-fat-image.sh" "$DIR"
 
 # there is a small race between the two invocations of losetup here,
 # as evaluating $NEW_LOSETUP will call `losetup -f` first.
