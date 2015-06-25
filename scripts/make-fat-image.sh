@@ -27,7 +27,7 @@ fi
 DIR=$1
 FILE=$(pwd)/fat.img
 SIZE=40KiB
-FAT=$(which fat)
+FAT=$(opam config var bin)/fat
 
 if [ ! -x "$FAT" ]; then
   echo I couldn\'t find the 'fat' command-line tool.
