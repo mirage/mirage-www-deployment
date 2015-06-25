@@ -32,4 +32,4 @@ cd "$KERNEL"
 
 rm -f "$VM.xen"
 bunzip2 -k "$VM.xen.bz2"
-sudo xl create "$VM.xl"
+sudo xl create "$NAME.xl"
