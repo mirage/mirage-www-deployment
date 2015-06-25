@@ -18,20 +18,22 @@
 set -eu
 
 if [ "$#" -eq 0 ]; then
-    echo "usage: $(basename "$0") NAME KEY-FILE"
+    echo "usage: $(basename "$0") NAME DIR"
     exit 1
 fi
 NAME=$1
 
-if [ "$#" -eq 1 ] || ! [ -f "$2" ]; then
-    echo "The FAT image containting the certificates is missing or invalid."
-    echo "usage: $(basename "$0") NAME KEY-FILE"
+if [ "$#" -eq 1 ] || ! [ -f "$2/tls/server.key" ] || ! [ -f "$2/tls/server.key" ];
+then
+    echo "The directory containting the certificates is missing or invalid."
+    echo "usage: $(basename "$0") NAME DIR"
     exit 1
 fi
-FILE=$2
+DIR=$2
 
 ROOT=$(git rev-parse --show-toplevel)
 SCRIPTS="$ROOT/scripts"
+FILE="$ROOT/keys.img"
 
 "$SCRIPTS/destroy-vm.sh" "$NAME"
 
@@ -40,6 +42,8 @@ SCRIPTS="$ROOT/scripts"
 # to umount the old loopback device first
 OLD_LOSETUP=$(sudo losetup -j "$FILE" -v | cut -f 1 -d ':')
 if ! [ -z "$OLD_LOSETUP" ]; then sudo losetup -d "$OLD_LOSETUP"; fi
+
+"$SCRIPTS/make-fat-image.sh" "$DIR" "$FILE"
 
 # there is a small race between the two invocations of losetup here,
 # as evaluating $NEW_LOSETUP will call `losetup -f` first.
