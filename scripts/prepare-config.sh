@@ -17,7 +17,7 @@
 
 set -eu
 
-if [ "$#" -eq 0 ]; then
+if [ "$#" -ge 3 ]; then
     echo "usage: $(basename "$0") NAME [DISK]"
     exit 1
 fi

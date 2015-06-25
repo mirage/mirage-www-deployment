@@ -17,7 +17,7 @@
 
 set -eu
 
-if [ "$#" -eq 0 ]; then
+if [ "$#" -ne 2 ]; then
     echo "usage: $(basename "$0") NAME DIR"
     exit 1
 fi
