@@ -1,6 +1,7 @@
-#!/bin/sh -ex
+#!/usr/bin/env bash
 #
 # Copyright (c) 2015 Richard Mortier <mort@cantab.net>. All Rights Reserved.
+# Copyright (c) 2015 Thomas Gazagnaire <thomas@gazagnaire.org>.
 #
 # Permission to use, copy, modify, and distribute this software for any purpose
 # with or without fee is hereby granted, provided that the above copyright
@@ -14,13 +15,23 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 
-## uncomment if necessary when debugging. redirects output to LOG_FILE
-# exec 1<&-
-# exec 2<&-
-# exec 1<>LOG_FILE
-# exec 2>&1
-# echo "This line will appear in LOG_FILE, not 'on screen'"
+set -eu
+
+if [ "$#" -eq 0 ]; then
+    echo "usage: $(basename "$0") NAME [DISK]"
+    exit 1
+fi
+
+NAME=$1
+
+if [ "$#" -eq 1 ]; then DISK=""; else DISK=$2; fi
 
 ROOT=$(git rev-parse --show-toplevel)
-"$ROOT/scripts/deploy.sh" openmirage.org
-"$ROOT/scripts/deploy-tls.sh" mirage.io "$ROOT/keys.img"
+KERNEL=$ROOT/xen/$(cat "$ROOT/xen/latest")
+VM="mir-$NAME"
+
+cd "$ROOT"
+
+sed -e "s,@VM@,$VM,g; s,@KERNEL@,$KERNEL/$VM.xen,g; s:@DISK@:$DISK:g" \
+    < xl.conf.in \
+    >| "$KERNEL/$NAME.xl"
