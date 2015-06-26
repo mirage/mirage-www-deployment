@@ -22,5 +22,10 @@
 # echo "This line will appear in LOG_FILE, not 'on screen'"
 
 ROOT=$(git rev-parse --show-toplevel)
-"$ROOT/scripts/deploy.sh" openmirage.org
-"$ROOT/scripts/deploy-tls.sh" mirage.io "$ROOT/tls"
+KERNEL=$ROOT/xen/$(cat "$ROOT/xen/latest")
+
+if [ -f "$KERNEL/mir-openmirage.org.xen" -a -f "$KERNEL/mir-mirage.io.xen" ];
+then
+    "$ROOT/scripts/deploy.sh" openmirage.org
+    "$ROOT/scripts/deploy-tls.sh" mirage.io "$ROOT/tls"
+fi
