@@ -24,7 +24,8 @@
 ROOT=$(git rev-parse --show-toplevel)
 KERNEL=$ROOT/xen/$(cat "$ROOT/xen/latest")
 
-if [ -f "$KERNEL/mir-openmirage.org.xen" -a -f "$KERNEL/mir-mirage.io.xen" ];
+if [ -f "$KERNEL/mir-openmirage.org.xen.bz2" -a \
+     -f "$KERNEL/mir-mirage.io.xen.bz2" ];
 then
     "$ROOT/scripts/deploy.sh" openmirage.org
     "$ROOT/scripts/deploy-tls.sh" mirage.io "$ROOT/tls"
