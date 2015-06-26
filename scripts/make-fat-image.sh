@@ -27,7 +27,8 @@ fi
 DIR=$1
 FILE=$(pwd)/fat.img
 SIZE=40KiB
-FAT=$(opam config var bin)/fat
+ROOT=$(git rev-parse --show-toplevel)
+FAT="$ROOT/bin/fat"
 
 if [ ! -x "$FAT" ]; then
   echo I couldn\'t find the 'fat' command-line tool.
