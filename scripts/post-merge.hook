@@ -22,4 +22,5 @@
 # echo "This line will appear in LOG_FILE, not 'on screen'"
 
 ROOT=$(git rev-parse --show-toplevel)
-exec $ROOT/scripts/deploy.sh
+"$ROOT/scripts/deploy.sh" openmirage.org
+"$ROOT/scripts/deploy-tls.sh" mirage.io "$ROOT/tls"

@@ -25,8 +25,11 @@ fi
 NAME=$1
 
 ROOT=$(git rev-parse --show-toplevel)
-SCRIPTS=$ROOT/scripts
+KERNEL=$ROOT/xen/$(cat "$ROOT/xen/latest")
+VM="mir-$NAME"
 
-"$SCRIPTS"/prepare-config.sh "$NAME"
-"$SCRIPTS"/destroy-vm.sh "$NAME"
-"$SCRIPTS"/create-vm.sh "$NAME"
+cd "$KERNEL"
+
+rm -f "$VM.xen"
+bunzip2 -k "$VM.xen.bz2"
+sudo xl create "$NAME.xl"

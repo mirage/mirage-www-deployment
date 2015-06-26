@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Copyright (c) 2015 Richard Mortier <mort@cantab.net>. All Rights Reserved.
+# Copyright (c) 2015 Richard Mortier <mort@cantab.net>. All Rights Reserved
 # Copyright (c) 2015 Thomas Gazagnaire <thomas@gazagnaire.org>.
 #
 # Permission to use, copy, modify, and distribute this software for any purpose
@@ -24,9 +24,4 @@ fi
 
 NAME=$1
 
-ROOT=$(git rev-parse --show-toplevel)
-SCRIPTS=$ROOT/scripts
-
-"$SCRIPTS"/prepare-config.sh "$NAME"
-"$SCRIPTS"/destroy-vm.sh "$NAME"
-"$SCRIPTS"/create-vm.sh "$NAME"
+sudo xl destroy "$NAME" || true

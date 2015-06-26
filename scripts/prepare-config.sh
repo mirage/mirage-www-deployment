@@ -17,16 +17,20 @@
 
 set -eu
 
-if [ "$#" -ne 1 ]; then
-    echo "usage: $(basename "$0") NAME"
+if [ "$#" -ge 3 ]; then
+    echo "usage: $(basename "$0") NAME [DISK]"
     exit 1
 fi
 
 NAME=$1
 
-ROOT=$(git rev-parse --show-toplevel)
-SCRIPTS=$ROOT/scripts
+if [ "$#" -eq 1 ]; then DISK=""; else DISK=$2; fi
 
-"$SCRIPTS"/prepare-config.sh "$NAME"
-"$SCRIPTS"/destroy-vm.sh "$NAME"
-"$SCRIPTS"/create-vm.sh "$NAME"
+ROOT=$(git rev-parse --show-toplevel)
+KERNEL=$ROOT/xen/$(cat "$ROOT/xen/latest")
+
+cd "$ROOT"
+
+sed -e "s,@NAME@,$NAME,g; s,@KERNEL@,$KERNEL/mir-$NAME.xen,g; s:@DISK@:$DISK:g" \
+    < xl.conf.in \
+    >| "$KERNEL/$NAME.xl"

@@ -17,16 +17,25 @@
 
 set -eu
 
-if [ "$#" -ne 1 ]; then
-    echo "usage: $(basename "$0") NAME"
+if [ "$#" -ne 1 ] || ! [ -f "$1/tls/server.key" ] || ! [ -f "$1/tls/server.pem" ];
+then
+    echo "usage: $(basename "$0") DIR"
+    echo "DIR should contain 'tls/server.key' and 'tls/server.pem'."
     exit 1
 fi
 
-NAME=$1
+DIR=$1
+FILE=$(pwd)/fat.img
+SIZE=40KiB
+FAT=$(opam config var bin)/fat
 
-ROOT=$(git rev-parse --show-toplevel)
-SCRIPTS=$ROOT/scripts
+if [ ! -x "$FAT" ]; then
+  echo I couldn\'t find the 'fat' command-line tool.
+  echo Try running 'opam install fat-filesystem'
+  exit 1
+fi
 
-"$SCRIPTS"/prepare-config.sh "$NAME"
-"$SCRIPTS"/destroy-vm.sh "$NAME"
-"$SCRIPTS"/create-vm.sh "$NAME"
+rm -f "$FILE"
+$FAT create "$FILE" "$SIZE"
+cd "$DIR" && $FAT add "$FILE" "tls"
+echo Created "$FILE"
