@@ -38,5 +38,6 @@ fi
 
 rm -f "$FILE"
 $FAT create "$FILE" "$SIZE"
+chmod 600 "$FILE"
 cd "$DIR" && $FAT add "$FILE" "tls"
 echo Created "$FILE"
