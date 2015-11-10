@@ -1,6 +1,7 @@
-#!/bin/sh -ex
+#!/bin/sh -eu
 #
 # Copyright (c) 2015 Richard Mortier <mort@cantab.net>. All Rights Reserved.
+# Copyright (c) 2015 Thomas Gazagnaire <thomas@gazagnaire.org>.
 #
 # Permission to use, copy, modify, and distribute this software for any purpose
 # with or without fee is hereby granted, provided that the above copyright
@@ -21,12 +22,17 @@
 # exec 2>&1
 # echo "This line will appear in LOG_FILE, not 'on screen'"
 
+cd $(dirname "$(readlink -f "$0")") # canonicalise directory
+
+HTTP=openmirage.org
+HTTPS=mirage.io
+
 ROOT=$(git rev-parse --show-toplevel)
 KERNEL=$ROOT/xen/$(cat "$ROOT/xen/latest")
 
-if [ -f "$KERNEL/mir-openmirage.org.xen.bz2" -a \
-     -f "$KERNEL/mir-mirage.io.xen.bz2" ];
+if [ -f "$KERNEL/mir-${HTTP}.xen.bz2" -a \
+     -f "$KERNEL/mir-${HTTPS}.xen.bz2" ];
 then
-    "$ROOT/scripts/deploy.sh" openmirage.org
-    "$ROOT/scripts/deploy-tls.sh" mirage.io "$ROOT/tls"
+    "$ROOT/scripts/deploy.sh" $HTTP
+    "$ROOT/scripts/deploy-tls.sh" $HTTPS "$ROOT/tls"
 fi
