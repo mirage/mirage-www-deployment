@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh -eu
 #
 # Copyright (c) 2015 Richard Mortier <mort@cantab.net>. All Rights Reserved.
 # Copyright (c) 2015 Thomas Gazagnaire <thomas@gazagnaire.org>.
@@ -15,7 +15,7 @@
 # OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 
-set -eu
+cd $(dirname "$(readlink -f "$0")") # canonicalise directory
 
 if [ "$#" -ne 1 ]; then
     echo "usage: $(basename "$0") NAME"

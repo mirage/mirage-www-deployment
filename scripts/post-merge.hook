@@ -1,4 +1,4 @@
-#!/bin/sh -ex
+#!/bin/sh -eu
 #
 # Copyright (c) 2015 Richard Mortier <mort@cantab.net>. All Rights Reserved.
 # Copyright (c) 2015 Thomas Gazagnaire <thomas@gazagnaire.org>.
@@ -21,6 +21,8 @@
 # exec 1<>LOG_FILE
 # exec 2>&1
 # echo "This line will appear in LOG_FILE, not 'on screen'"
+
+cd $(dirname "$(readlink -f "$0")") # canonicalise directory
 
 HTTP=openmirage.org
 HTTPS=mirage.io
