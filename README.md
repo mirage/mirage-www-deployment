@@ -9,7 +9,7 @@ Travis CI build run.
 
 ## Deploy
 
-./scripts/post-merge.hook will be run on every commit. This scripts needs:
+`./scripts/post-merge.hook` will be run on every commit. This scripts needs:
 
 - The SSL keys located into:
 ```
