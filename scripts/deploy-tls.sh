@@ -50,5 +50,5 @@ if ! [ -z "$OLD_LOSETUP" ]; then sudo losetup -d "$OLD_LOSETUP"; fi
 NEW_LOSETUP=$(sudo losetup -f)
 sudo losetup "$NEW_LOSETUP" "$FILE"
 
-"$SCRIPTS/prepare-config.sh" "$NAME" "disk = [ '$NEW_LOSETUP,,xvda' ]"
+"$SCRIPTS/prepare-config.sh" "$NAME" "disk = [ '$NEW_LOSETUP,,xvdb' ]"
 "$SCRIPTS/create-vm.sh" "$NAME"
