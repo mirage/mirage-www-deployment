@@ -23,6 +23,7 @@
 # echo "This line will appear in LOG_FILE, not 'on screen'"
 
 cd $(dirname "$(readlink -f "$0")") # canonicalise directory
+unset GIT_DIR
 
 HTTP=openmirage.org
 HTTPS=mirage.io
