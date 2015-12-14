@@ -17,17 +17,18 @@
 
 set -eu
 
-if [ "$#" -ne 1 ] || ! [ -f "$1/tls/server.key" ] || ! [ -f "$1/tls/server.pem" ];
+ROOT=$(git rev-parse --show-toplevel)
+
+if [ "$#" -ne 1 ] || ! [ -f "$1/server.key" ] || ! [ -f "$1/server.pem" ];
 then
     echo "usage: $(basename "$0") DIR"
-    echo "DIR should contain 'tls/server.key' and 'tls/server.pem'."
+    echo "DIR should contain 'server.key' and 'server.pem'."
     exit 1
 fi
 
 DIR=$1
-FILE=$(pwd)/fat.img
+FILE=$ROOT/fat.img
 SIZE=40KiB
-ROOT=$(git rev-parse --show-toplevel)
 FAT="$ROOT/bin/fat"
 
 if [ ! -x "$FAT" ]; then
@@ -39,5 +40,5 @@ fi
 rm -f "$FILE"
 $FAT create "$FILE" "$SIZE"
 chmod 600 "$FILE"
-cd "$DIR" && $FAT add "$FILE" "tls"
+cd "$DIR" && $FAT add "$FILE" server.key server.pem
 echo Created "$FILE"
