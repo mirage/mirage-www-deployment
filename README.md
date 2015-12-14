@@ -13,8 +13,8 @@ Travis CI build run.
 
 - The SSL keys located into:
 ```
-./tls/tls/server.key
-./tls/tls/server.pem
+./tls/server.key
+./tls/server.pem
 ```
 
 - The `fat` binary installed with `ocaml-fat` installed in:
