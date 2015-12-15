@@ -1,4 +1,13 @@
 #!/bin/sh -eu
+### BEGIN INIT INFO
+# Provides:          mirage.io
+# Required-Start:    $local_fs $network $syslog $time
+# Required-Stop:     $local_fs $network $syslog $time
+# Default-Start:     5
+# Default-Stop:      0 6
+# Short-Description: Start MirageOS website
+# Description:       Boots the latest MirageOS website unikernel.
+### END INIT INFO
 #
 # Copyright (c) 2015 Richard Mortier <mort@cantab.net>. All Rights Reserved.
 # Copyright (c) 2015 Thomas Gazagnaire <thomas@gazagnaire.org>.
