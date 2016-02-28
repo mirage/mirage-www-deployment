@@ -36,19 +36,6 @@ SCRIPTS="$ROOT/scripts"
 FILE="$ROOT/fat.img"
 
 "$SCRIPTS/destroy-vm.sh" "$NAME"
-
-# Note: bash lazily evaluates the variables, so it's important to keep
-# the **use** of OLD_LOSETUP and NEW_LOSETUP in the right order: need
-# to umount the old loopback device first
-OLD_LOSETUP=$(sudo losetup -j "$FILE" -v | cut -f 1 -d ':')
-if ! [ -z "$OLD_LOSETUP" ]; then sudo losetup -d "$OLD_LOSETUP"; fi
-
 "$SCRIPTS/make-fat-image.sh" "$DIR"
-
-# there is a small race between the two invocations of losetup here,
-# as evaluating $NEW_LOSETUP will call `losetup -f` first.
-NEW_LOSETUP=$(sudo losetup -f)
-sudo losetup "$NEW_LOSETUP" "$FILE"
-
-"$SCRIPTS/prepare-config.sh" "$NAME" "disk = [ '$NEW_LOSETUP,,xvdb' ]"
+"$SCRIPTS/prepare-config.sh" "$NAME" "disk = [ 'format=raw, vdev=xvdg, access=rw, target=$FILE' ]"
 "$SCRIPTS/create-vm.sh" "$NAME"
