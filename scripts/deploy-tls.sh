@@ -37,5 +37,5 @@ FILE="$ROOT/fat.img"
 
 "$SCRIPTS/destroy-vm.sh" "$NAME"
 "$SCRIPTS/make-fat-image.sh" "$DIR"
-"$SCRIPTS/prepare-config.sh" "$NAME" "disk = [ 'format=raw, vdev=xvdg, access=rw, target=$FILE' ]"
+"$SCRIPTS/prepare-config.sh" "$NAME" "disk = [ 'format=raw, vdev=xvdb, access=rw, target=$FILE' ]"
 "$SCRIPTS/create-vm.sh" "$NAME"
